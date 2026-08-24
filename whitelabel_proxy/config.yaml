@@ -1,0 +1,16 @@
+name: White-Label API Proxy
+version: "1.0.0"
+slug: whitelabel_proxy
+description: Exposes only Home Assistant's API (/api/* and /api/websocket) and blocks the web UI, so end users only ever see your branded App.
+url: https://github.com/your-org/your-addon-repo/tree/main/whitelabel_proxy
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+init: false
+ports:
+  8080/tcp: 8080
+ports_description:
+  8080/tcp: "API port your branded App connects to (ws://<gateway-ip>:8080/api/websocket)"

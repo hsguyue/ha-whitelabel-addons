@@ -1,0 +1,25 @@
+name: White-Label Pairing
+version: "1.0.0"
+slug: whitelabel_pairing
+description: Issues a per-device Home Assistant long-lived access token after the App presents a pairing code. Tokens are minted on demand via the HA WebSocket API.
+url: https://github.com/your-org/your-addon-repo/tree/main/whitelabel_pairing
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+init: false
+hassio_api: true
+ports:
+  8099/tcp: 8099
+ports_description:
+  8099/tcp: "Pairing endpoint your branded App POSTs the pairing code to (LAN only)"
+options:
+  pairing_code: "CHANGE-ME-PRINT-ON-DEVICE"
+  master_token: ""
+  token_lifespan_days: 3650
+schema:
+  pairing_code: str
+  master_token: password
+  token_lifespan_days: int(1,36500)

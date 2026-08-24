@@ -1,0 +1,20 @@
+name: White-Label Cloud Connector
+version: "1.0.0"
+slug: whitelabel_cloud
+description: Keeps an outbound tunnel to your cloud relay so your branded App can reach this gateway over the Internet, without opening any inbound port on the home router.
+url: https://github.com/your-org/your-addon-repo/tree/main/whitelabel_cloud
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+init: false
+options:
+  cloud_url: "wss://relay.example.com/device-tunnel"
+  device_id: null
+  device_token: null
+schema:
+  cloud_url: str
+  device_id: str
+  device_token: password
