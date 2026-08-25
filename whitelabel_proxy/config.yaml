@@ -2,7 +2,7 @@ name: White-Label API Proxy
 version: "1.0.0"
 slug: whitelabel_proxy
 description: Exposes only Home Assistant's API (/api/* and /api/websocket) and blocks the web UI, so end users only ever see your branded App.
-url: https://github.com/your-org/your-addon-repo/tree/main/whitelabel_proxy
+url: https://github.com/hsguyue/ha-whitelabel-addons/tree/main/whitelabel_proxy
 arch:
   - aarch64
   - amd64

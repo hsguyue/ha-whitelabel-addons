@@ -2,7 +2,7 @@ name: White-Label Pairing
 version: "1.0.0"
 slug: whitelabel_pairing
 description: Issues a per-device Home Assistant long-lived access token after the App presents a pairing code. Tokens are minted on demand via the HA WebSocket API.
-url: https://github.com/your-org/your-addon-repo/tree/main/whitelabel_pairing
+url: https://github.com/hsguyue/ha-whitelabel-addons/tree/main/whitelabel_pairing
 arch:
   - aarch64
   - amd64
