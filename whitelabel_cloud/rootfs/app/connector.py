@@ -27,6 +27,10 @@ import sys
 
 from aiohttp import ClientSession, WSMsgType
 
+SUPERVISOR_TOKEN = os.environ.get("SUPERVISOR_TOKEN", "")
+
+# Defaults; overwritten by load_options() when running as a Supervisor add-on.
+# Env vars still honored so the same code can run standalone for testing.
 CLOUD_URL = os.environ.get("CLOUD_URL", "ws://127.0.0.1:9000/device-tunnel")
 DEVICE_ID = os.environ.get("DEVICE_ID", "DEV-DEMO-001")
 DEVICE_TOKEN = os.environ.get("DEVICE_TOKEN", "devtoken")
@@ -37,6 +41,39 @@ HA_HOST = os.environ.get("HA_HOST", "homeassistant.local.hass.io")
 HA_PORT = int(os.environ.get("HA_PORT", "8123"))
 
 RECONNECT_DELAY = 5
+
+
+async def load_options() -> None:
+    """Read this add-on's options from the Supervisor API.
+
+    `GET /addons/self/info` returns the caller's own options un-redacted, so
+    the cloud_url / device_id / device_token configured in the HA UI are
+    actually applied. Falls back to env vars when SUPERVISOR_TOKEN is absent
+    (local/off-OS testing).
+    """
+    global CLOUD_URL, DEVICE_ID, DEVICE_TOKEN
+    if not SUPERVISOR_TOKEN:
+        print("No SUPERVISOR_TOKEN — using env-var config (test/off-OS mode).")
+        return
+
+    headers = {"X-Supervisor-Token": SUPERVISOR_TOKEN}
+    url = "http://supervisor/addons/self/info"
+    try:
+        async with ClientSession() as session:
+            async with session.get(url, headers=headers, timeout=10) as resp:
+                data = await resp.json()
+        opts = data.get("data", {}).get("options", {})
+        CLOUD_URL = opts.get("cloud_url", CLOUD_URL)
+        DEVICE_ID = opts.get("device_id", DEVICE_ID)
+        DEVICE_TOKEN = opts.get("device_token", DEVICE_TOKEN)
+    except Exception as e:  # noqa: BLE001
+        print(f"ERROR loading options from Supervisor: {e}")
+        return
+
+    print(
+        f"Loaded options: cloud_url={CLOUD_URL} device_id={DEVICE_ID} "
+        f"device_token={'<set>' if DEVICE_TOKEN else '<empty>'}"
+    )
 
 
 class _LocalChannel:
@@ -170,7 +207,11 @@ async def run():
 
 
 if __name__ == "__main__":
+    async def _main() -> None:
+        await load_options()
+        await run()
+
     try:
-        asyncio.run(run())
+        asyncio.run(_main())
     except KeyboardInterrupt:
         sys.exit(0)
